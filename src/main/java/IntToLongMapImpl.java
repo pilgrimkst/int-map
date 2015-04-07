@@ -2,8 +2,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class IntToLongMapImpl implements IntToLongMap {
-    public static final int INITIAL_CAPACITY = 10;
-    private static final double MAX_LOAD_FACTOR = 2.0;
+    public static final int INITIAL_CAPACITY = 16;
+    public static final double MAX_LOAD_FACTOR = 2.0;
     public Bucket[] buckets = new Bucket[INITIAL_CAPACITY];
     private int capacity = INITIAL_CAPACITY;
     private int size = 0;
@@ -13,14 +13,18 @@ public class IntToLongMapImpl implements IntToLongMap {
         Bucket bucket = buckets[bucketNumber];
         if (bucket != null) {
             IntToLongEntry entry = bucket.entryByKey(key);
-            return entry != null ? entry.getValue() : IntToLongMap.DEFAULT_VALUE;
-        } else {
-            return IntToLongMap.DEFAULT_VALUE;
+            if (entry != null) return entry.getValue();
         }
+
+        return IntToLongMap.DEFAULT_VALUE;
     }
 
     public long put(int key, long value) {
-        rebalanceBucketsIfRequired();
+
+        if (isReballanceRequired()) {
+            increaseBucketSizeTo(capacity * 2);
+        }
+
         return putInternal(key, value, buckets);
     }
 
@@ -40,13 +44,11 @@ public class IntToLongMapImpl implements IntToLongMap {
         }
     }
 
-    private void rebalanceBucketsIfRequired() {
-        if (size / buckets.length >= MAX_LOAD_FACTOR) {
-            increaseBucketSizeTo(capacity * 2);
-        }
+    private boolean isReballanceRequired() {
+        return size / buckets.length >= MAX_LOAD_FACTOR;
     }
 
-    private void increaseBucketSizeTo(int newBucketSize) {
+    protected void increaseBucketSizeTo(int newBucketSize) {
         Bucket[] newBuckets = new Bucket[newBucketSize];
         Set<IntToLongEntry> entrys = entrySet();
 
@@ -60,16 +62,16 @@ public class IntToLongMapImpl implements IntToLongMap {
 
     }
 
+    public int size() {
+        return size;
+    }
+
     private Set<IntToLongEntry> entrySet() {
         Set<IntToLongEntry> entrys = new HashSet<>();
         for (Bucket e : buckets) {
             entrys.addAll(e.entrySet());
         }
         return entrys;
-    }
-
-    public int size() {
-        return size;
     }
 
     private int getBucketIndexForKey(int key, int capacity) {

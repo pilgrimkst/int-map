@@ -4,6 +4,12 @@ import static org.junit.Assert.assertEquals;
 
 public class IntToLongMapTest {
 
+    public static void fillMap(IntToLongMap map, int from, int to) {
+        for (int i = from; i < to; i++) {
+            map.put(i, i);
+        }
+    }
+
     @Test
     public void getShouldRetrieveExistingElement() throws Exception {
         IntToLongMap map = initMap();
@@ -45,7 +51,6 @@ public class IntToLongMapTest {
         assertEquals(IntToLongMap.DEFAULT_KEY, map.put(0, 1l));
     }
 
-
     @Test
     public void putShouldReplaceElementsWithSameKeys() throws Exception {
         IntToLongMap map = initMap();
@@ -66,9 +71,7 @@ public class IntToLongMapTest {
         map.put(0, 1000l);
         map.put(Integer.MAX_VALUE, 2000l);
 
-        for (int i = 1; i < 1000; i++) {
-            map.put(i, i);
-        }
+        fillMap(map, 1, 1000);
 
         assertEquals(1000l, map.get(0));
         assertEquals(2000l, map.get(Integer.MAX_VALUE));
