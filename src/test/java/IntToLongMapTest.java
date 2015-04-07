@@ -15,7 +15,7 @@ public class IntToLongMapTest {
     public void getShouldReturnDefaultValueOnMissingKey() throws Exception {
         IntToLongMap map = initMap();
         assertEquals(0, map.size());
-        assertEquals(IntToLongMap.NULL_VALUE, map.get(0));
+        assertEquals(IntToLongMap.DEFAULT_KEY, map.get(0));
     }
 
     @Test
@@ -42,7 +42,7 @@ public class IntToLongMapTest {
     public void putShouldReturnDefaultValueIfValueIsNotSet() throws Exception {
         IntToLongMap map = initMap();
         assertEquals(0, map.size());
-        assertEquals(IntToLongMap.NULL_VALUE, map.put(0, 1l));
+        assertEquals(IntToLongMap.DEFAULT_KEY, map.put(0, 1l));
     }
 
 

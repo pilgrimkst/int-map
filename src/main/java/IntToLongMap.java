@@ -1,6 +1,7 @@
 public interface IntToLongMap {
 
-    int NULL_VALUE = Integer.MIN_VALUE;
+    int DEFAULT_VALUE = Integer.MIN_VALUE;
+    int DEFAULT_KEY = Integer.MIN_VALUE;
 
     long get(int key);
 
