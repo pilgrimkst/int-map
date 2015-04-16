@@ -82,6 +82,6 @@ public class IntToLongMapTest {
     }
 
     private IntToLongMap initMap() {
-        return new IntToLongMapImpl();
+        return new IntToLongMapOpenAddressingImpl();
     }
 }
