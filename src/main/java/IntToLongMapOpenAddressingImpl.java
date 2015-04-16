@@ -1,4 +1,9 @@
 import java.util.Arrays;
+import java.util.function.IntPredicate;
+import java.util.stream.IntStream;
+
+import static java.util.stream.IntStream.concat;
+import static java.util.stream.IntStream.range;
 
 public class IntToLongMapOpenAddressingImpl implements IntToLongMap {
     public static final int KEY_NOT_FOUND = Integer.MIN_VALUE + 1;
@@ -28,11 +33,6 @@ public class IntToLongMapOpenAddressingImpl implements IntToLongMap {
         }
 
         return putInternal(key, value, keys, values);
-    }
-
-    private void fillWithDefaultValues(int[] keys, long[] values) {
-        Arrays.fill(keys, UNDEFINED_KEY);
-        Arrays.fill(values, UNDEFINED_VALUE);
     }
 
     private long putInternal(int key, long value, int[] keys, long[] values) {
@@ -74,25 +74,24 @@ public class IntToLongMapOpenAddressingImpl implements IntToLongMap {
         return size;
     }
 
+    private void fillWithDefaultValues(int[] keys, long[] values) {
+        Arrays.fill(keys, UNDEFINED_KEY);
+        Arrays.fill(values, UNDEFINED_VALUE);
+    }
+
+    private int findMatchingKeyIndex(IntPredicate predicate, int key, int[] keys) {
+        return genSearchOrder(key, keys)
+                .filter(i -> predicate.test(keys[i]))
+                .findFirst()
+                .orElse(KEY_NOT_FOUND);
+    }
+
+    private IntStream genSearchOrder(int key, int[] keys) {
+        int start = getKeyHash(key, keys);
+        return concat(range(start, keys.length), range(0, start));
+    }
+
     private int getKeyHash(int key, int[] keys) {
         return key % keys.length;
     }
-
-    private int findMatchingKeyIndex(KeyPredicate predicate, int key, int[] keys) {
-        int start = getKeyHash(key, keys);
-        for (int i = start; i < keys.length; i++) {
-            if (predicate.matches(keys[i])) return i;
-        }
-
-        for (int i = 0; i < start; i++) {
-            if (predicate.matches(keys[i])) return i;
-        }
-
-        return KEY_NOT_FOUND;
-    }
-
-    private interface KeyPredicate {
-        boolean matches(int k);
-    }
-
 }
