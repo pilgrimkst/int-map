@@ -19,7 +19,7 @@ public class Bucket {
             IntToLongEntry newEntry = new IntToLongEntry(key, value);
             IntToLongEntry lastEntryInBucket = getLastEntry();
             lastEntryInBucket.setNext(newEntry);
-            return IntToLongMap.DEFAULT_VALUE;
+            return IntToLongMap.UNDEFINED_VALUE;
         }
     }
 

@@ -16,7 +16,7 @@ public class IntToLongMapImpl implements IntToLongMap {
             if (entry != null) return entry.getValue();
         }
 
-        return IntToLongMap.DEFAULT_VALUE;
+        return IntToLongMap.UNDEFINED_VALUE;
     }
 
     public long put(int key, long value) {
@@ -36,10 +36,10 @@ public class IntToLongMapImpl implements IntToLongMap {
         if (b == null) {
             buckets[index] = new Bucket(new IntToLongEntry(key, value));
             size++;
-            return IntToLongMap.DEFAULT_VALUE;
+            return IntToLongMap.UNDEFINED_VALUE;
         } else {
             long set = b.set(key, value);
-            if (set == IntToLongMap.DEFAULT_VALUE) size++;
+            if (set == IntToLongMap.UNDEFINED_VALUE) size++;
             return set;
         }
     }
