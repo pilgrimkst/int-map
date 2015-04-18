@@ -57,6 +57,7 @@ public class IntToLongMapOpenAddressingImpl implements IntToLongMap {
     }
 
     protected void increaseBucketSizeTo(int newSize) {
+        int size = size();
         int[] newKeys = new int[newSize];
         long[] newValues = new long[newSize];
         fillWithDefaultValues(newKeys, newValues);
@@ -68,6 +69,7 @@ public class IntToLongMapOpenAddressingImpl implements IntToLongMap {
 
         keys = newKeys;
         values = newValues;
+        this.size = size;
     }
 
     public int size() {
@@ -93,5 +95,18 @@ public class IntToLongMapOpenAddressingImpl implements IntToLongMap {
 
     private int getKeyHash(int key, int[] keys) {
         return key % keys.length;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder b = new StringBuilder("IntToLongMapOpenAddressingImpl{");
+        for (int i = 0; i < keys.length; i++) {
+            if (keys[i] != UNDEFINED_KEY) {
+                b.append(keys[i] + "=" + values[i] + ", ");
+            }
+        }
+
+        b.append("}");
+        return b.toString();
     }
 }

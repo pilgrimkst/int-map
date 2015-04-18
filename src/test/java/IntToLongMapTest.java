@@ -1,5 +1,9 @@
 import org.junit.Test;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
 import static org.junit.Assert.assertEquals;
 
 public class IntToLongMapTest {
@@ -66,19 +70,31 @@ public class IntToLongMapTest {
     }
 
     @Test
-    public void allValuesRemainAccessibleOnIncreasedCapacity() throws Exception {
+    public void randomAccessingTest() throws Exception {
+        Map<Integer, Long> testValues = getRandomMap(100000);
         IntToLongMap map = initMap();
-        map.put(0, 1000l);
-        map.put(Integer.MAX_VALUE, 2000l);
+        copyToTestMap(map, testValues);
+        assertMapsEqual(map, testValues);
+    }
 
-        fillMap(map, 1, 1000);
+    private void assertMapsEqual(IntToLongMap map, Map<Integer, Long> testValues) {
+        assertEquals(testValues.size(), map.size());
+        testValues.entrySet().forEach(e -> assertEquals("for key" + e.getKey(), map.get(e.getKey()), (long) e.getValue()));
+    }
 
-        assertEquals(1000l, map.get(0));
-        assertEquals(2000l, map.get(Integer.MAX_VALUE));
-
-        for (int i = 1; i < 1000; i++) {
-            assertEquals(i, map.get(i));
+    private void copyToTestMap(IntToLongMap map, Map<Integer, Long> testValues) {
+        for (Map.Entry<Integer, Long> entry : testValues.entrySet()) {
+            map.put(entry.getKey(), entry.getValue());
         }
+    }
+
+    private HashMap<Integer, Long> getRandomMap(int n) {
+        Random r = new Random();
+        HashMap<Integer, Long> integerLongHashMap = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            integerLongHashMap.put(r.nextInt(1000000), (long) r.nextInt(1000000));
+        }
+        return integerLongHashMap;
     }
 
     private IntToLongMap initMap() {
